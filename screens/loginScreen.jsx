@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { login } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
-import { storeUserKey } from "../utils/userKeyStorage";
+import { storeUserKey, getUserKey } from '../utils/userKeyStorage';
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState('');
@@ -11,6 +11,16 @@ function LoginScreen({ navigation }) {
   const [emailError, setEmailError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
   const [loginError, setLoginError] = React.useState('');
+  const checkUserKey = async () => {
+    const userKey = await getUserKey();
+    if (userKey) {
+      navigation.navigate('WhatsThat?!');
+    }
+  };
+  useEffect(() => {
+    checkUserKey();
+  }, []);
+
   const handleLogin = () => {
     // Validate email
     if (!validateEmail(email)) {
@@ -50,11 +60,7 @@ function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
       {emailError ? <Text style={{ color: 'red' }}>{emailError}</Text> : null}
       <TextInput
         placeholder="Password"
@@ -62,11 +68,15 @@ function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         secureTextEntry
       />
-      {passwordError ? (<Text style={{ color: 'red' }}>{passwordError}</Text>) : null}
+      {passwordError ? (
+        <Text style={{ color: 'red' }}>{passwordError}</Text>
+      ) : null}
       <TouchableOpacity onPress={handleLogin}>
         <Text>Login</Text>
       </TouchableOpacity>
-      {loginError ? (<Text style={{ color: 'red' }}>{loginError}</Text>) : null}
+      {loginError ? (
+        <Text style={{ color: 'red' }}>{loginError}</Text>
+      ) : null}
       <TouchableOpacity onPress={handleRegister}>
         <Text>Don't have an account? Register</Text>
       </TouchableOpacity>

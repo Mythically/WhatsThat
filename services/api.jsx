@@ -94,6 +94,17 @@ export async function getContacts() {
   });
 }
 
+// add a contact
+export async function addContact(userId) {
+  const userKey = await getUserKey();
+  return fetch(`${baseUrl}user/${userId}/contact`, {
+    method: 'POST',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+}
+
 // search users
 export async function searchAllUsers() {
   const userKey = await getUserKey();

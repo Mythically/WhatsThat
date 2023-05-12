@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
-import { searchAllUsers } from '../services/api';
+import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { addContact, searchAllUsers } from '../services/api';
+// to save my life i cannot tell you why sometimes we don't need the curly braces
+// around the imported component 🤷‍♀️
+import ContactComponent from '../components/contactComponent';
 
 function ContactsScreen() {
   const [contacts, setContacts] = useState([]);
+
+  const handleAddContact = async (userId) => {
+    try {
+      await addContact(userId);
+      // Perform any additional actions after adding the contact
+      console.log('Contact added successfully!');
+    } catch (error) {
+      console.error('Error adding contact:', error);
+    }
+  };
 
   const fetchContacts = async () => {
     try {
@@ -25,13 +38,7 @@ function ContactsScreen() {
         data={contacts}
         keyExtractor={(contact) => contact.user_id.toString()}
         renderItem={({ item }) => (
-          <View>
-            <Text>
-              {/* AIRBNB: HEY ONE ITEM PER LINE, also AIRBNB: HEY NO TRAILING SPACES 🙄 */}
-              {item.given_name} {item.family_name}
-            </Text>
-            <Text>{item.email}</Text>
-          </View>
+          <ContactComponent item={item} onPress={() => handleAddContact(item.user_id)} />
         )}
       />
     </SafeAreaView>

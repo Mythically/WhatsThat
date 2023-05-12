@@ -1,28 +1,36 @@
-// create a functional component to display the screen containing
-// all the chats and messages the user has
-// chats need to be get from the api at localhost:3333/chat
-// display chats in a flatlist
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getChatsList } from '../services/api';
 
-const ChatsScreen = () => {
+function ChatsScreen() {
   const [chats, setChats] = useState([]);
 
+  useEffect(() => {
+    const getChats = async () => {
+      try {
+        const chatsData = await getChatsList().json();
+        setChats(chatsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getChats();
+  }, []);
+
   return (
-    <View>
+    <SafeAreaView>
       <FlatList
         data={chats}
-        keyExtractor={(chat) => chat.id}
-        renderItem={({ item }) => {
-          return (
+        keyExtractor={(chat) => chat.id.toString()}
+        renderItem={({ item }) => (
             <View>
               <Text>{item.name}</Text>
             </View>
-          );
-        }}
+        )}
       />
-    </View>
+    </SafeAreaView>
   );
-};
+}
 
 export default ChatsScreen;

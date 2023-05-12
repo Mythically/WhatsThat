@@ -3,7 +3,7 @@ import { Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { login } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
-import { storeUserKey} from "../utils/userKeyStorage";
+import { storeUserKey } from "../utils/userKeyStorage";
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState('');
@@ -30,8 +30,10 @@ function LoginScreen({ navigation }) {
 
     login(email, password).then((response) => {
       if (response.status === 200) {
-        storeUserKey(response.headers.get('token'));
-        navigation.navigate('chatsScreen');
+        response.json().then((data) => {
+          storeUserKey(data.token);
+        });
+        navigation.navigate('WhatsThat?!');
         console.log(response);
       } else {
         response.text().then((data) => {

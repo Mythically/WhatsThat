@@ -1,44 +1,65 @@
 import { getUserKey } from '../utils/userKeyStorage';
-// create the calls for the 32 api endpoints
+import timeout from '../utils/chatListTimeout';
+import { getUserId } from './loginManager';
+
 const baseUrl = 'http://localhost:3333/api/1.0.0/';
 
-// register
-// eslint-disable-next-line import/prefer-default-export,camelcase
+// eslint-disable-next-line camelcase
 export async function register(first_name, last_name, email, password) {
-  return fetch(`${baseUrl}user`, {
+  const response = await fetch(`${baseUrl}user`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      // eslint-disable-next-line camelcase
       first_name,
+      // eslint-disable-next-line camelcase
       last_name,
       email,
       password,
     }),
   });
+
+  return response.json();
 }
 
-// login
 export async function login(email, password) {
-  return fetch(`${baseUrl}login`, {
+  const response = await fetch(`${baseUrl}login`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      accept: 'application/json',
     },
     body: JSON.stringify({
       email,
       password,
     }),
   });
+
+  if (response.ok) {
+    return response.json();
+  }
+  return 'Invalid email/password supplied';
 }
-// update user
+
+export async function getUser(userId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+  return response.json();
+}
+
 export async function updateUser(userId, firstName, lastName, email, password) {
-  return fetch(`${baseUrl}user/${userId}`, {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}`, {
     method: 'PATCH',
     headers: {
-      'Content-Type': 'application/json',
-      'X-Authorization': await getUserKey(),
+      'X-Authorization': userKey,
     },
     body: JSON.stringify({
       firstName,
@@ -47,71 +68,293 @@ export async function updateUser(userId, firstName, lastName, email, password) {
       password,
     }),
   });
+
+  return response;
 }
 
-// logout user
 export async function logout() {
-  return fetch(`${baseUrl}logout`, {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}logout`, {
     method: 'POST',
     headers: {
-      'X-Authorization': await getUserKey(),
+      'X-Authorization': userKey,
     },
   });
+
+  return response;
 }
 
-// get users profile photo
 export async function getProfilePhoto(userId) {
-  return fetch(`${baseUrl}user/${userId}/photo`, {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}/photo`, {
     method: 'GET',
     headers: {
-      'X-Authorization': await getUserKey(),
+      'X-Authorization': userKey,
     },
   });
+
+  return response.json();
 }
 
-// update users profile photo
-//get a list of chats
 export async function getChatsList() {
-  const userKey = await getUserKey();
-  console.log('User Key:', userKey);
+  try {
+    const userKey = await getUserKey();
+    const responsePromise = fetch(`${baseUrl}chat`, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        'X-Authorization': userKey,
+      },
+    });
 
-  return fetch(`${baseUrl}chat`, {
+    const response = await timeout(5000, responsePromise); // Waiting max 1 second for response
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data || [];
+  } catch (error) {
+    console.error('Error in getChatsList:', error);
+    // If there's an error or timeout, return null
+    return null;
+  }
+}
+
+export async function getChatDetails(chatId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat/${chatId}`, {
     method: 'GET',
+    headers: {
+      'content-type': 'application/json',
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response.json();
+}
+
+export async function createChat(name) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': userKey,
+    },
+    body: JSON.stringify({
+      name,
+    }),
+  });
+
+  const jsonResponse = await response.json();
+  console.log('Response:', jsonResponse);
+  return jsonResponse;
+}
+
+export async function addUserToChat(chatId, userId) {
+  const userKey = await getUserKey();
+  return fetch(`${baseUrl}chat/${chatId}/user/${userId}`, {
+    method: 'POST',
     headers: {
       'X-Authorization': userKey,
     },
   });
 }
 
-// get all contacts
+export async function removeUserFromChat(chatId, userId) {
+  const userKey = await getUserKey();
+  return fetch(`${baseUrl}chat/${chatId}/user/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+}
+
+export async function updateChatName(chatId, name) {
+  const userKey = await getUserKey();
+  return fetch(`${baseUrl}chat/${chatId}`, {
+    method: 'PATCH',
+    headers: {      'Content-Type': 'application/json',
+      'X-Authorization': userKey,
+    },
+
+    body: JSON.stringify({
+      name,
+    }),
+  });
+}
+
+export async function getMessages(chatId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat/${chatId}`, {
+    method: 'GET',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response.json();
+}
+
+export async function sendMessage(chatId, message) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat/${chatId}/message`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': userKey,
+    },
+    body: JSON.stringify({
+      message,
+    }),
+  });
+
+  return response;
+}
+
+export async function deleteMessage(chatId, messageId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response;
+}
+
+export async function editMessage(chatId, messageId, message) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization': userKey,
+    },
+    body: JSON.stringify({
+      message,
+    }),
+  });
+
+  return response;
+}
+
 export async function getContacts() {
   const userKey = await getUserKey();
-  return fetch(`${baseUrl}contacts`, {
+  const response = await fetch(`${baseUrl}contacts`, {
     method: 'GET',
     headers: {
       'X-Authorization': userKey,
     },
   });
+
+  return response.json();
 }
 
-// add a contact
 export async function addContact(userId) {
   const userKey = await getUserKey();
-  return fetch(`${baseUrl}user/${userId}/contact`, {
+  const response = await fetch(`${baseUrl}user/${userId}/contact`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
     },
   });
+
+  return response;
 }
 
-// search users
-export async function searchAllUsers() {
+export async function removeContact(userId) {
   const userKey = await getUserKey();
-  return fetch(`${baseUrl}search?search_in=all`, {
+  const response = await fetch(`${baseUrl}user/${userId}/contact`, {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response;
+}
+
+// block contact
+export async function blockContact(userId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}/block`, {
+    method: 'POST',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response;
+}
+
+// unblock contact
+export async function unblockContact(userId) {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}/block`, {
+    method: 'DELETE',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response;
+}
+
+// get blocked contacts
+export async function getBlockedContacts() {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}blocked`, {
     method: 'GET',
     headers: {
       'X-Authorization': userKey,
     },
   });
+
+  return response.json();
+}
+
+export async function searchAllUsers() {
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}search?search_in=all`, {
+    method: 'GET',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+
+  return response.json();
+}
+
+export async function sendPhoto(data){
+  const userId = await getUserId();
+  const userKey = await getUserKey();
+  let photo = fetch(data.base64);
+  let blob = await photo.blob();
+
+  const response = await fetch(`${baseUrl}chat/${userId}/photo`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'image/png',
+      'X-Authorization': userKey,
+    },
+    body: blob,
+  });
+
+  return response;
+}
+
+export async function getPhoto(userId){
+  const userKey = await getUserKey();
+  const response = await fetch(`${baseUrl}user/${userId}/photo`, {
+    method: 'GET',
+    headers: {
+      'X-Authorization': userKey,
+    },
+  });
+  return response;
 }

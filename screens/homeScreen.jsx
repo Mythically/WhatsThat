@@ -6,7 +6,7 @@ import ContactsScreen from './contactsScreen';
 
 const Tab = createBottomTabNavigator();
 
-function HomeScreen() {
+function HomeScreen({ navigation }) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -34,4 +34,5 @@ function HomeScreen() {
     </Tab.Navigator>
   );
 }
+
 export default HomeScreen;

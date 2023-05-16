@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { login } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
 import { storeUserKey, getUserKey } from '../utils/userKeyStorage';
+import { storeFirstName, storeUserId } from '../services/loginManager';
+import { styles } from '../styles/basicInputButton';
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState('');
@@ -13,45 +15,49 @@ function LoginScreen({ navigation }) {
   const [loginError, setLoginError] = React.useState('');
   const checkUserKey = async () => {
     const userKey = await getUserKey();
-    if (userKey) {
+    if (userKey != null) {
       navigation.navigate('WhatsThat?!');
     }
   };
+
   useEffect(() => {
     checkUserKey();
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    try {
     // Validate email
-    if (!validateEmail(email)) {
-      setEmailError('Invalid email');
-      return;
-    } else {
+      if (!validateEmail(email)) {
+        setEmailError('Invalid email');
+        return;
+      }
       setEmailError('');
-    }
 
-    // Validate password
-    if (!validatePassword(password)) {
-      setPasswordError('Invalid password');
-      return;
-    } else {
+      // Validate password
+      if (!validatePassword(password)) {
+        setPasswordError('Invalid password');
+        return;
+      }
       setPasswordError('');
-    }
 
-    login(email, password).then((response) => {
-      if (response.status === 200) {
-        response.json().then((data) => {
-          storeUserKey(data.token);
-        });
+      const response = await login(email, password);
+      if (response.token && response.id) {
+        console.log('Login successful');
+        await storeUserKey(response.token);
+        await storeUserId(response.id);
+        await storeFirstName();
+        while (getUserKey() === null) {
+          console.log('Waiting for user key');
+        }
         navigation.navigate('WhatsThat?!');
         console.log(response);
       } else {
-        response.text().then((data) => {
-          setLoginError(data);
-        });
+        setLoginError(response);
         console.log(response);
       }
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRegister = () => {
@@ -59,26 +65,38 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView>
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-      {emailError ? <Text style={{ color: 'red' }}>{emailError}</Text> : null}
+    <SafeAreaView style={styles.container}>
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+        accessibilityLabel="email-input"
+      />
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
       <TextInput
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        style={styles.input}
+        accessibilityLabel="password-input"
       />
       {passwordError ? (
-        <Text style={{ color: 'red' }}>{passwordError}</Text>
+        <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
-      <TouchableOpacity onPress={handleLogin}>
-        <Text>Login</Text>
+      <TouchableOpacity
+        onPress={handleLogin}
+        style={styles.button}
+        accessibilityLabel="login-button"
+      >
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       {loginError ? (
-        <Text style={{ color: 'red' }}>{loginError}</Text>
+        <Text style={styles.errorText}>{loginError}</Text>
       ) : null}
       <TouchableOpacity onPress={handleRegister}>
-        <Text>Don't have an account? Register</Text>
+        <Text style={styles.registerText}>Don't have an account? Register</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

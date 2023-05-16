@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { register, login } from '../services/api';
+import { register, login, updateUser } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
-import ChatsScreen from './chatsScreen';
-
+import { getUserId } from '../services/loginManager';
+import { useRoute } from '@react-navigation/native';
+import { styles } from '../styles/basicInputButton';
 function RegisterScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [registerErroor, setRegisterError] = useState('');
-  const handleRegister = () => {
+  const [registerError, setRegisterError] = useState('');
+  const [updateError, setUpdateError] = useState('');
+  const route = useRoute();
+  const { source, data } = route.params || {};
+  const [email, setEmail] = useState(data && data.email ? data.email : '');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState(data && data.first_name ? data.first_name : '');
+  const [lastName, setLastName] = useState(data && data.last_name ? data.last_name : '');
+
+  useEffect(() => {
+    if (source === 'SettingsScreen') {
+      navigation.setOptions({ title: 'Update Profile' });
+    }
+  }, []);
+
+  const handleRegister = async () => {
     // Validate email
     if (!validateEmail(email)) {
       setEmailError('Invalid email');
@@ -28,57 +39,61 @@ function RegisterScreen({ navigation }) {
     }
     setPasswordError('');
 
-    register(firstName, lastName, email, password)
-      .then((responseRegister) => {
-        if (responseRegister.status === 200) {
-          console.log('Registration successful. Logging in...');
-          login(email, password)
-            .then((responseLogin) => {
-              if (responseLogin.status === 200) {
-                responseLogin.json().then((data) => {
-                  console.log('Login successful', data);
-                  navigation.navigate('HomeScreen');
-                });
-              } else {
-                console.error('Login failed. Please try again.');
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+    try {
+      if (source === 'SettingsScreen') {
+        const userId = await getUserId();
+        const responseUpdate = await updateUser(userId, firstName, lastName, email, password);
+        if (responseUpdate.ok) {
+          navigation.navigate('LoginScreen!');
         } else {
-          responseRegister.text().then((errorText) => {
-            setRegisterError(`Registration failed, ${errorText}`);
-            console.error('Registration failed.', errorText);
-          });
+          setUpdateError('Update failed');
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      } else {
+        const responseRegister = await register(firstName, lastName, email, password);
+        if ('user_id' in responseRegister) {
+          const responseLogin = await login(email, password);
+          if ('token' in responseLogin) {
+            navigation.navigate('WhatsThat?!');
+          } else {
+            console.error('Login failed. Please try again.');
+          }
+        } else {
+          console.error('Registration failed.', responseRegister);
+          setRegisterError(`Registration failed, ${responseRegister}`);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <TextInput
         placeholder="Firstname"
         value={firstName}
         onChangeText={setFirstName}
+        style={styles.input}
+        accessibilityLabel="firstname-input"
       />
       <TextInput
         placeholder="Lastname"
         value={lastName}
         onChangeText={setLastName}
+        style={styles.input}
+        accessibilityLabel="lastname-input"
       />
-      {emailError ? <Text style={{ color: 'red' }}>{emailError}</Text> : null}
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
       <TextInput
         placeholder="email@example.com"
         autoCompleteType="email"
         value={email}
         onChangeText={setEmail}
+        style={styles.input}
+        accessibilityLabel="email-input"
       />
       {passwordError ? (
-        <Text style={{ color: 'red' }}>{passwordError}</Text>
+        <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
       <TextInput
         placeholder="password"
@@ -86,11 +101,18 @@ function RegisterScreen({ navigation }) {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        style={styles.input}
+        accessibilityLabel="password-input"
       />
-      <TouchableOpacity onPress={handleRegister}>
-        <Text>Register</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleRegister}
+        accessibilityLabel="register-button"
+      >
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
-      <Text style={{ color: 'mustard' }}>{registerErroor}</Text>
+      <Text style={styles.errorText}>{registerError}</Text>
+      <Text style={styles.errorText}>{updateError}</Text>
     </SafeAreaView>
   );
 }

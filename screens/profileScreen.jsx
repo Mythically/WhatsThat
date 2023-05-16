@@ -3,7 +3,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Alert, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import ManageChat from '../utils/manageChat';
 import {
-  addContact, blockContact, removeContact, unblockContact,
+  addContact,
+  blockContact,
+  getContacts,
+  removeContact,
+  unblockContact,
 } from '../services/api';
 import { getContactStatus } from '../utils/contactStatus';
 
@@ -27,16 +31,33 @@ function ContactProfile({ route }) {
 
   const handleChatPress = useCallback(async () => {
     console.log('contact:', contact);
-    ManageChat(navigation, contact);
-  }, [navigation, contact]);
+    if (contactStatus === 'added') {
+      // Chat with the contact
+      ManageChat(navigation, contact);
+    } else {
+      // Add the contact first and then chat
+      try {
+        const addUser = await addContact(contact.user_id);
+        if (addUser.status === 400) {
+          alert('You cannot add yourself as a contact.');
+        } else {
+          fetchContactStatus();
+          ManageChat(navigation, contact);
+        }
+      } catch (error) {
+        console.error('Error adding contact:', error);
+      }
+    }
+  }, [navigation, contact, contactStatus, fetchContactStatus]);
 
   const handleAddContactPress = async () => {
     try {
       const addUser = await addContact(contact.user_id);
       if (addUser.status === 400) {
-        alert('you cannot add yourself as a contact YOU SILLY GOOSE 🤣');
+        alert('You cannot add yourself as a contact.');
+      } else {
+        fetchContactStatus();
       }
-      fetchContactStatus();
     } catch (error) {
       console.error('Error adding contact:', error);
     }

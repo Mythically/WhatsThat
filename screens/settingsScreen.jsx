@@ -65,9 +65,10 @@ function SettingsScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}>
-        <Text style={styles.buttonText}>Pupload Profile Photo</Text>
-      </TouchableOpacity>
+      {/* rip */}
+      {/* <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}> */}
+      {/*   <Text style={styles.buttonText}>Pupload Profile Photo</Text> */}
+      {/* </TouchableOpacity> */}
       <TouchableOpacity onPress={() => handleProfileUpdate()} style={styles.button}>
         <Text style={styles.buttonText}>Update Profile</Text>
       </TouchableOpacity>

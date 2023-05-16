@@ -1,4 +1,4 @@
-import { getChatsList, createChat, addUserToChat } from '../services/api';
+import { getChatsList, createChat, addUserToChat, getChatDetails } from '../services/api';
 import { getFirstName, getUserId } from '../services/loginManager';
 
 async function ManageChat(navigation, contact) {
@@ -18,13 +18,13 @@ async function ManageChat(navigation, contact) {
       return;
     }
 
-    console.log(typeof chats);
 
     const authorFirstName = await getFirstName();
     const chatNameToFind = `${authorFirstName} + ${contact.given_name}`;
 
     for (const chat of chats) {
       if (chat.name === chatNameToFind) {
+        console.log(chat.name, '   ', chatNameToFind);
         console.log('Chat already exists with this user');
         navigation.navigate('Chat', { chatId: chat.chat_id });
         return;
@@ -33,7 +33,7 @@ async function ManageChat(navigation, contact) {
 
     // If no existing chat is found, create a new chat
     console.log('No chat exists with this user, creating a new chat...');
-    console.log(contact.first_name);
+    console.log(contact.given_name);
     const newChat = await createChat(`${await getFirstName()} + ${contact.given_name}`);
     await addUserToChat(newChat.chat_id, contact.user_id);
     navigation.navigate('Chat', { chatId: newChat.chat_id });

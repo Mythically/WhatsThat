@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
-import { register, login, updateUser } from '../services/api';
+import { register, updateUser } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
-import { getUserId, storeFirstName, storeUserId } from '../services/loginManager';
+import { getUserId } from '../services/loginManager';
 import { styles } from '../styles/basicInputButton';
-import { storeUserKey } from '../utils/userKeyStorage';
 
 function RegisterScreen({ navigation }) {
   const [emailError, setEmailError] = useState('');
@@ -41,12 +40,7 @@ function RegisterScreen({ navigation }) {
 
     const responseRegister = await register(firstName, lastName, email, password);
     if ('user_id' in responseRegister) {
-      const responseLogin = await login(email, password);
-      if ('token' in responseLogin) {
-        navigation.navigate('LoginScreen');
-      } else {
-        console.error('Login failed. Please try again.');
-      }
+      navigation.navigate('LoginScreen');
     } else {
       console.error('Registration failed.', responseRegister);
       setRegisterError(`Registration failed, ${responseRegister}`);

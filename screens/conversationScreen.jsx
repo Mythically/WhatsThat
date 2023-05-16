@@ -10,7 +10,6 @@ import DraftsList from '../components/draftsList';
 
 function ConversationScreen({ route }) {
   const { chatId } = route.params;
-  console.log('chatId:', chatId);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [editingMessage, setEditingMessage] = useState(null);
@@ -21,7 +20,6 @@ function ConversationScreen({ route }) {
     const userId = await getUserId();
     try {
       const data = await getMessages(chatId);
-      console.log(data);
       const formattedMessages = data.messages.map((message) => {
         return {
           id: message.message_id,
@@ -71,16 +69,16 @@ function ConversationScreen({ route }) {
     }
   }
 
-  const handleEditMessage = async () => {
-    try {
-      await editMessage(editingMessage.id, inputMessage);
-      setInputMessage('');
-      setEditingMessage(null);
-      fetchMessages();
-    } catch (error) {
-      console.error('Error editing message:', error);
-    }
-  };
+  // const handleEditMessage = async () => {
+  //   try {
+  //     await editMessage(editingMessage.id, inputMessage);
+  //     setInputMessage('');
+  //     setEditingMessage(null);
+  //     fetchMessages();
+  //   } catch (error) {
+  //     console.error('Error editing message:', error);
+  //   }
+  // };
 
   const handleSaveDraft = () => {
     if (inputMessage !== '') {
@@ -88,8 +86,6 @@ function ConversationScreen({ route }) {
       setInputMessage('');
     }
   };
-
-
   const handleLongPress = (message) => {
     setInputMessage(message.text);
     setEditingMessage(message);
@@ -125,7 +121,7 @@ function ConversationScreen({ route }) {
           <Text>Save Draft</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowDrafts(!showDrafts)}>
-          <Text>Show Drafts</Text>
+          <Text>{showDrafts ? 'Hide Drafts' : 'Show Drafts'}</Text>
         </TouchableOpacity>
         {showDrafts && (
           <DraftsList

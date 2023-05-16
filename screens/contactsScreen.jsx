@@ -12,7 +12,7 @@ function ContactsScreen() {
   const handleContact = async (contact) => {
     try {
       console.log(contact);
-      navigation.navigate('ProfileScreen', { contact });
+      navigation.navigate('ProfileScreen', { contact: contact });
     } catch (error) {
       console.error('Error adding contact:', error);
     }

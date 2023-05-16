@@ -22,7 +22,7 @@ async function ManageChat(navigation, contact) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const chat of chats) {
-      if (chat.name === chatNameToFind) {
+      if (chat.name === chatNameToFind || chat.name === `${contact.given_name} + ${authorFirstName}`) {
         console.log(chat.name, '   ', chatNameToFind);
         console.log('Chat already exists with this user');
         navigation.navigate('Chat', { chatId: chat.chat_id });

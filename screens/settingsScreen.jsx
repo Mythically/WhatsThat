@@ -41,11 +41,12 @@ function SettingsScreen() {
   const handleProfileUpdate = async () => {
     try {
       const userId = await getUserId();
-      const userData = await getUser(userId);
+      let userData = await getUser(userId);
       navigation.navigate('RegisterScreen', {
         source: 'SettingsScreen',
         data: userData,
       });
+      userData = null;
     } catch (error) {
       console.error(error);
     }
@@ -67,7 +68,7 @@ function SettingsScreen() {
       <TouchableOpacity onPress={() => navigation.navigate('CameraScreen')}>
         <Text style={styles.buttonText}>Pupload Profile Photo</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleProfileUpdate()}style={styles.button}>
+      <TouchableOpacity onPress={() => handleProfileUpdate()} style={styles.button}>
         <Text style={styles.buttonText}>Update Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleAddContact} style={styles.button}>

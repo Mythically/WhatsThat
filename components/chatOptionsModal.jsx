@@ -9,7 +9,6 @@ const ChatOptionsModal = ({
   newChatName,
   setNewChatName,
   addChatContact,
-  removeContact,
   navigation,
 }) => {
   console.log('ChatOptionsModal called with selectedChat:', selectedChat);

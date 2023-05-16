@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
-import { deleteMessage, editMessage, getMessages, sendMessage } from '../services/api';
+import {
+  View, Text, FlatList, TextInput, TouchableOpacity, SafeAreaView,
+} from 'react-native';
+import {
+  deleteMessage, editMessage, getMessages, sendMessage,
+} from '../services/api';
 import { getUserId } from '../services/loginManager';
+import DraftsList from '../components/draftsList';
 
 function ConversationScreen({ route }) {
   const { chatId } = route.params;
@@ -9,6 +14,9 @@ function ConversationScreen({ route }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [editingMessage, setEditingMessage] = useState(null);
+  const [draftMessages, setDraftMessages] = useState([]);
+  const [showDrafts, setShowDrafts] = useState(false);
+
   const fetchMessages = async () => {
     const userId = await getUserId();
     try {
@@ -74,6 +82,14 @@ function ConversationScreen({ route }) {
     }
   };
 
+  const handleSaveDraft = () => {
+    if (inputMessage !== '') {
+      setDraftMessages([...draftMessages, inputMessage]);
+      setInputMessage('');
+    }
+  };
+
+
   const handleLongPress = (message) => {
     setInputMessage(message.text);
     setEditingMessage(message);
@@ -97,15 +113,27 @@ function ConversationScreen({ route }) {
             </View>
           </TouchableOpacity>
         )}
-
-
       />
       <View>
         <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1, paddingHorizontal: 10 }}
           value={inputMessage}
           onChangeText={setInputMessage}
           placeholder="Type your message"
         />
+        <TouchableOpacity onPress={handleSaveDraft}>
+          <Text>Save Draft</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowDrafts(!showDrafts)}>
+          <Text>Show Drafts</Text>
+        </TouchableOpacity>
+        {showDrafts && (
+          <DraftsList
+            draftMessages={draftMessages}
+            setDraftMessage={setDraftMessages}
+            setInputMessage={setInputMessage}
+          />
+        )}
         <TouchableOpacity onPress={handleSendMessage}>
           <Text>{editingMessage ? 'Save' : 'Send'}</Text>
         </TouchableOpacity>

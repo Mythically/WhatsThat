@@ -26,6 +26,7 @@ function ContactProfile({ route }) {
   }, [fetchContactStatus]);
 
   const handleChatPress = useCallback(async () => {
+    console.log('contact:', contact);
     ManageChat(navigation, contact);
   }, [navigation, contact]);
 

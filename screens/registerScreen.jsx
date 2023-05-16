@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute } from '@react-navigation/native';
 import { register, login, updateUser } from '../services/api';
 import { validateEmail, validatePassword } from '../utils/validators';
-import { getUserId } from '../services/loginManager';
-import { useRoute } from '@react-navigation/native';
+import { getUserId, storeFirstName, storeUserId } from '../services/loginManager';
 import { styles } from '../styles/basicInputButton';
+import { storeUserKey } from '../utils/userKeyStorage';
+
 function RegisterScreen({ navigation }) {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -25,45 +27,51 @@ function RegisterScreen({ navigation }) {
   }, []);
 
   const handleRegister = async () => {
-    // Validate email
     if (!validateEmail(email)) {
       setEmailError('Invalid email');
       return;
     }
     setEmailError('');
 
-    // Validate password
     if (!validatePassword(password)) {
       setPasswordError('Invalid password');
       return;
     }
     setPasswordError('');
 
-    try {
-      if (source === 'SettingsScreen') {
-        const userId = await getUserId();
-        const responseUpdate = await updateUser(userId, firstName, lastName, email, password);
-        if (responseUpdate.ok) {
-          navigation.navigate('LoginScreen!');
-        } else {
-          setUpdateError('Update failed');
-        }
+    const responseRegister = await register(firstName, lastName, email, password);
+    if ('user_id' in responseRegister) {
+      const responseLogin = await login(email, password);
+      if ('token' in responseLogin) {
+        navigation.navigate('LoginScreen');
       } else {
-        const responseRegister = await register(firstName, lastName, email, password);
-        if ('user_id' in responseRegister) {
-          const responseLogin = await login(email, password);
-          if ('token' in responseLogin) {
-            navigation.navigate('WhatsThat?!');
-          } else {
-            console.error('Login failed. Please try again.');
-          }
-        } else {
-          console.error('Registration failed.', responseRegister);
-          setRegisterError(`Registration failed, ${responseRegister}`);
-        }
+        console.error('Login failed. Please try again.');
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      console.error('Registration failed.', responseRegister);
+      setRegisterError(`Registration failed, ${responseRegister}`);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email');
+      return;
+    }
+    setEmailError('');
+
+    if (!validatePassword(password)) {
+      setPasswordError('Invalid password');
+      return;
+    }
+    setPasswordError('');
+
+    const userId = await getUserId();
+    const responseUpdate = await updateUser(userId, firstName, lastName, email, password);
+    if (responseUpdate.ok) {
+      navigation.navigate('WhatsThat?!');
+    } else {
+      setUpdateError('Update failed');
     }
   };
 
@@ -106,10 +114,10 @@ function RegisterScreen({ navigation }) {
       />
       <TouchableOpacity
         style={styles.button}
-        onPress={handleRegister}
+        onPress={source === 'SettingsScreen' ? handleUpdate : handleRegister}
         accessibilityLabel="register-button"
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={styles.buttonText}>{source === 'SettingsScreen' ? 'Update' : 'Register'}</Text>
       </TouchableOpacity>
       <Text style={styles.errorText}>{registerError}</Text>
       <Text style={styles.errorText}>{updateError}</Text>

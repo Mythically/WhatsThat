@@ -1,15 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import styles from '../styles/styles';
 
 function ContactComponent({ item, onPress }) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={{
-        borderColor: 'gray',
-        borderWidth: 1,
-      }}
-      >
-        <Text>
+    <TouchableOpacity style={styles.chatItem} onPress={onPress}>
+      <View>
+        <Text style={styles.chatName}>
           {item.given_name} {item.family_name}
         </Text>
         <Text>{item.email}</Text>

@@ -22,6 +22,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  chatItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  chatName: {
+    fontSize: 16,
+  },
 });
-
 export default styles;

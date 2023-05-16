@@ -9,22 +9,8 @@ import {
   updateChatName,
 } from '../services/api';
 import ChatOptionsModal from '../components/chatOptionsModal';
+import styles from '../styles/styles';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  chatItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  chatName: {
-    fontSize: 16,
-  },
-});
 function ChatsScreen({ navigation }) {
   const [chats, setChats] = useState([]);
   // const [isLoading, setIsLoading] = useState(true); // for some reason it just no work 🤷‍♀️

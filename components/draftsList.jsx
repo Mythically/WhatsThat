@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
+// eslint-disable-next-line no-unused-vars
 const DraftsList = ({ draftMessages, setDraftMessage, setInputMessage }) => {
   const handleCopyToInput = (draft) => {
     setInputMessage(draft);

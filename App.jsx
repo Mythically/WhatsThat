@@ -11,7 +11,7 @@ import ConversationScreen from './screens/conversationScreen';
 import ChatManager from './utils/manageChat';
 import SearchUsersScreen from './screens/searchUsersScreen';
 import RemoveContactScreen from './screens/removeContactScreen';
-import CameraScreen from './screens/cameraScreen';
+// import CameraScreen from './screens/cameraScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +33,7 @@ export default function App() {
           component={HomeScreen}
           options={({ navigation }) => ({
             headerLeft: null,
+            // eslint-disable-next-line react/no-unstable-nested-components
             headerRight: () => (
               <SettingsButton onPress={() => navigation.navigate('SettingsScreen')} />
             ),

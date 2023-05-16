@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getContacts, getBlockedContacts } from '../services/api';
 import ContactComponent from '../components/contactComponent';
+import styles from '../styles/styles';
 
 function ContactsScreen() {
   const [contacts, setContacts] = useState([]);
@@ -50,7 +51,7 @@ function ContactsScreen() {
   }, [navigation, route]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={contacts}
         keyExtractor={(contact) => contact.user_id.toString()}

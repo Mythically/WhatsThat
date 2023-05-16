@@ -1,6 +1,6 @@
 import { getUserKey } from '../utils/userKeyStorage';
 import timeout from '../utils/chatListTimeout';
-import { getUserId } from './loginManager';
+// import { getUserId } from './loginManager';
 
 const baseUrl = 'http://localhost:3333/api/1.0.0/';
 
@@ -57,7 +57,7 @@ export async function getUser(userId) {
 // eslint-disable-next-line camelcase
 export async function updateUser(userId, first_name, last_name, email, password) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}user/${userId}`, {
+  return fetch(`${baseUrl}user/${userId}`, {
     method: 'PATCH',
     headers: {
       'X-Authorization': userKey,
@@ -75,7 +75,7 @@ export async function updateUser(userId, first_name, last_name, email, password)
 
 export async function logout() {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}logout`, {
+  return fetch(`${baseUrl}logout`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
@@ -201,7 +201,7 @@ export async function getMessages(chatId) {
 
 export async function sendMessage(chatId, message) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}chat/${chatId}/message`, {
+  return fetch(`${baseUrl}chat/${chatId}/message`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -215,7 +215,7 @@ export async function sendMessage(chatId, message) {
 
 export async function deleteMessage(chatId, messageId) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+  return fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,
@@ -225,7 +225,7 @@ export async function deleteMessage(chatId, messageId) {
 
 export async function editMessage(chatId, messageId, message) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+  return fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ export async function getContacts() {
 
 export async function addContact(userId) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}user/${userId}/contact`, {
+  return fetch(`${baseUrl}user/${userId}/contact`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
@@ -261,7 +261,7 @@ export async function addContact(userId) {
 
 export async function removeContact(userId) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}user/${userId}/contact`, {
+  return fetch(`${baseUrl}user/${userId}/contact`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,
@@ -272,7 +272,7 @@ export async function removeContact(userId) {
 // block contact
 export async function blockContact(userId) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}user/${userId}/block`, {
+  return fetch(`${baseUrl}user/${userId}/block`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
@@ -283,7 +283,7 @@ export async function blockContact(userId) {
 // unblock contact
 export async function unblockContact(userId) {
   const userKey = await getUserKey();
-  return await fetch(`${baseUrl}user/${userId}/block`, {
+  return fetch(`${baseUrl}user/${userId}/block`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,

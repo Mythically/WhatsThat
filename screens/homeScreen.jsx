@@ -6,6 +6,7 @@ import ContactsScreen from './contactsScreen';
 
 const Tab = createBottomTabNavigator();
 
+// eslint-disable-next-line no-unused-vars
 function HomeScreen({ navigation }) {
   return (
     <Tab.Navigator

@@ -18,7 +18,6 @@ function ChatsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [newChatName, setNewChatName] = useState('');
   const fetchChats = async () => {
-    console.log('fetching chats');
     try {
       const chatsData = await getChatsList();
       setChats(chatsData);

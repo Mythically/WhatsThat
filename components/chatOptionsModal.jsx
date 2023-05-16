@@ -14,10 +14,8 @@ const ChatOptionsModal = ({
   removeContact,
   navigation,
 }) => {
-  console.log('ChatOptionsModal called with selectedChat:', selectedChat);
   const handleRenameChat = async () => {
     try {
-      // Call the renameChat function with the selectedChat ID and the new chat name
       await renameChat(selectedChat, newChatName);
       setModalVisible(false); // Close the modal after renaming
     } catch (error) {

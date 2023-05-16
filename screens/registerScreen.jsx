@@ -61,7 +61,9 @@ function RegisterScreen({ navigation }) {
     setPasswordError('');
 
     const userId = await getUserId();
-    const responseUpdate = await updateUser(userId, firstName, lastName, email, password);
+    const first_name = firstName;
+    const last_name = lastName;
+    const responseUpdate = await updateUser(userId, first_name, last_name, email, password);
     if (responseUpdate.ok) {
       navigation.navigate('WhatsThat?!');
     } else {

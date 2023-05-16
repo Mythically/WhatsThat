@@ -54,7 +54,8 @@ export async function getUser(userId) {
   return response.json();
 }
 
-export async function updateUser(userId, firstName, lastName, email, password) {
+// eslint-disable-next-line camelcase
+export async function updateUser(userId, first_name, last_name, email, password) {
   const userKey = await getUserKey();
   return await fetch(`${baseUrl}user/${userId}`, {
     method: 'PATCH',
@@ -62,8 +63,10 @@ export async function updateUser(userId, firstName, lastName, email, password) {
       'X-Authorization': userKey,
     },
     body: JSON.stringify({
-      firstName,
-      lastName,
+      // eslint-disable-next-line camelcase
+      first_name,
+      // eslint-disable-next-line camelcase
+      last_name,
       email,
       password,
     }),

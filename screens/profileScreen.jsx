@@ -12,6 +12,7 @@ import {
   unblockContact,
 } from '../services/api';
 import getContactStatus from '../utils/contactStatus';
+import styles from '../styles/styles';
 
 function ContactProfile({ route }) {
   const navigation = useNavigation();
@@ -93,38 +94,67 @@ function ContactProfile({ route }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{contact.first_name} {contact.last_name}</Text>
-      <Text>Email: {contact.email}</Text>
-      <TouchableOpacity onPress={handleChatPress}>
-        <Text>Chat</Text>
+    <SafeAreaView style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    >
+      <Text style={styles.nameText}>{contact.given_name} {contact.family_name}</Text>
+      <Text style={styles.emailText}>Email: {contact.email}</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleChatPress}
+        accessible
+        accessibilityLabel="Chat Button"
+      >
+        <Text style={styles.buttonText}>Chat</Text>
       </TouchableOpacity>
 
       {contactStatus === 'not_added' && (
-        <TouchableOpacity onPress={handleAddContactPress}>
-          <Text>Add Contact</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleAddContactPress}
+          accessible
+          accessibilityLabel="Add Contact Button"
+        >
+          <Text style={styles.buttonText}>Add Contact</Text>
         </TouchableOpacity>
       )}
 
       {contactStatus === 'added' && (
-        <TouchableOpacity onPress={handleRemoveContactPress}>
-          <Text>Remove Contact</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleRemoveContactPress}
+          accessible
+          accessibilityLabel="Remove Contact Button"
+        >
+          <Text style={styles.buttonText}>Remove Contact</Text>
         </TouchableOpacity>
       )}
 
       {contactStatus === 'blocked' && (
-        <TouchableOpacity onPress={handleUnblockContactPress}>
-          <Text>Unblock Contact</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleUnblockContactPress}
+          accessible
+          accessibilityLabel="Unblock Contact Button"
+        >
+          <Text style={styles.buttonText}>Unblock Contact</Text>
         </TouchableOpacity>
       )}
 
       {contactStatus === 'added' && (
-        <TouchableOpacity onPress={handleBlockContactPress}>
-          <Text>Block Contact</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleBlockContactPress}
+          accessible
+          accessibilityLabel="Block Contact Button"
+        >
+          <Text style={styles.buttonText}>Block Contact</Text>
         </TouchableOpacity>
       )}
     </SafeAreaView>
   );
 }
-
 export default ContactProfile;

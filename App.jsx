@@ -27,15 +27,17 @@ export default function App() {
         <Stack.Screen name="Chat" component={ConversationScreen} />
         <Stack.Screen name="SearchUsers" component={SearchUsersScreen} />
         <Stack.Screen name="ContactRemove" component={RemoveContactScreen} />
-        <Stack.Screen name="CameraScreen" component={CameraScreen} />
+        {/* <Stack.Screen name="CameraScreen" component={CameraScreen} /> */}
         <Stack.Screen
           name="WhatsThat?!"
           component={HomeScreen}
           options={({ navigation }) => ({
-            // eslint-disable-next-line react/no-unstable-nested-components
+            headerLeft: null,
             headerRight: () => (
               <SettingsButton onPress={() => navigation.navigate('SettingsScreen')} />
             ),
+            headerBackTitleVisible: false,
+            gestureEnabled: false,
           })}
         />
       </Stack.Navigator>

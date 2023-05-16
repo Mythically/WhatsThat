@@ -75,7 +75,7 @@ function SettingsScreen() {
       <TouchableOpacity onPress={handleAddContact} style={styles.button}>
         <Text style={styles.buttonText}>Add a contact</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleViewBlockedContacts}style={styles.button}>
+      <TouchableOpacity onPress={handleViewBlockedContacts} style={styles.button}>
         <Text style={styles.buttonText}>View blocked contacts</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogout} style={styles.button}>

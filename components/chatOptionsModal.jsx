@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, Modal, Button, TextInput } from 'react-native';
+import {
+  View, Text, Modal, Button, TextInput,
+} from 'react-native';
 
 const ChatOptionsModal = ({
   modalVisible,
@@ -38,7 +40,14 @@ const ChatOptionsModal = ({
       }}
     >
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{ flex: 1, marginTop: 22, backgroundColor: '#fff', paddingHorizontal: 20 }}>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 22,
+            backgroundColor: '#fff',
+            paddingHorizontal: 20,
+          }}
+        >
           <Text>Rename chat, Add contact and Remove contact</Text>
 
           <TextInput
@@ -46,11 +55,15 @@ const ChatOptionsModal = ({
             value={newChatName}
             onChangeText={setNewChatName}
             placeholder="Enter new chat name"
+            accessible={true}
+            accessibilityLabel="New Chat Name Input"
           />
 
           <Button
             title="Rename chat"
             onPress={handleRenameChat}
+            accessible={true}
+            accessibilityLabel="Rename Chat Button"
           />
 
           <Button
@@ -59,6 +72,8 @@ const ChatOptionsModal = ({
               navigation.navigate('SearchUsers', { onContactSelect: handleAddContact });
               setModalVisible(false);
             }}
+            accessible={true}
+            accessibilityLabel="Add Contact Button"
           />
 
           <Button
@@ -67,6 +82,8 @@ const ChatOptionsModal = ({
               navigation.navigate('ContactRemove', { chatId: selectedChat });
               setModalVisible(false);
             }}
+            accessible={true}
+            accessibilityLabel="Remove Contact Button"
           />
 
           <Button
@@ -74,10 +91,13 @@ const ChatOptionsModal = ({
             onPress={() => {
               setModalVisible(!modalVisible);
             }}
+            accessible={true}
+            accessibilityLabel="Close Button"
           />
         </View>
       </View>
     </Modal>
+
   );
 };
 

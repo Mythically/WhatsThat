@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import {
+  Alert, SafeAreaView, Text, TouchableOpacity,
+} from 'react-native';
 import ManageChat from '../utils/manageChat';
 import {
   addContact,
@@ -9,7 +11,7 @@ import {
   removeContact,
   unblockContact,
 } from '../services/api';
-import { getContactStatus } from '../utils/contactStatus';
+import getContactStatus from '../utils/contactStatus';
 
 function ContactProfile({ route }) {
   const navigation = useNavigation();

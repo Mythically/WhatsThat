@@ -9,6 +9,7 @@ const DraftsList = ({ draftMessages, setDraftMessage, setInputMessage }) => {
   return (
     <View>
       {draftMessages.map((draft, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <View key={index}>
           <Text>{draft}</Text>
           <TouchableOpacity onPress={() => handleCopyToInput(draft)}>

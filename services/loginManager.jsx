@@ -1,4 +1,3 @@
-// save user id in storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUser } from './api';
 
@@ -18,7 +17,6 @@ export const getUserId = async () => {
   }
 };
 
-//  store first name
 export const storeFirstName = async () => {
   try {
     const userId = await getUserId();

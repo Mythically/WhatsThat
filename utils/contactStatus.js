@@ -1,6 +1,6 @@
 import { getBlockedContacts, getContacts } from '../services/api';
 
-export const getContactStatus = async (contactId) => {
+const getContactStatus = async (contactId) => {
   try {
     const blockedContacts = await getBlockedContacts();
     const contacts = await getContacts();
@@ -16,3 +16,4 @@ export const getContactStatus = async (contactId) => {
     return null;
   }
 };
+export default getContactStatus;

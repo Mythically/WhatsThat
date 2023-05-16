@@ -17,6 +17,7 @@ function HomeScreen({ navigation }) {
         name="Chats"
         component={ChatsScreen}
         options={{
+          // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chat" color={color} size={size} />
           ),
@@ -26,6 +27,7 @@ function HomeScreen({ navigation }) {
         name="Contacts"
         component={ContactsScreen}
         options={{
+          // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),

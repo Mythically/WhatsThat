@@ -56,7 +56,7 @@ export async function getUser(userId) {
 
 export async function updateUser(userId, firstName, lastName, email, password) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}`, {
+  return await fetch(`${baseUrl}user/${userId}`, {
     method: 'PATCH',
     headers: {
       'X-Authorization': userKey,
@@ -68,20 +68,16 @@ export async function updateUser(userId, firstName, lastName, email, password) {
       password,
     }),
   });
-
-  return response;
 }
 
 export async function logout() {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}logout`, {
+  return await fetch(`${baseUrl}logout`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 export async function getProfilePhoto(userId) {
@@ -177,7 +173,8 @@ export async function updateChatName(chatId, name) {
   const userKey = await getUserKey();
   return fetch(`${baseUrl}chat/${chatId}`, {
     method: 'PATCH',
-    headers: {      'Content-Type': 'application/json',
+    headers: {
+      'Content-Type': 'application/json',
       'X-Authorization': userKey,
     },
 
@@ -201,7 +198,7 @@ export async function getMessages(chatId) {
 
 export async function sendMessage(chatId, message) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}chat/${chatId}/message`, {
+  return await fetch(`${baseUrl}chat/${chatId}/message`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -211,25 +208,21 @@ export async function sendMessage(chatId, message) {
       message,
     }),
   });
-
-  return response;
 }
 
 export async function deleteMessage(chatId, messageId) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+  return await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 export async function editMessage(chatId, messageId, message) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
+  return await fetch(`${baseUrl}chat/${chatId}/message/${messageId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -239,8 +232,6 @@ export async function editMessage(chatId, messageId, message) {
       message,
     }),
   });
-
-  return response;
 }
 
 export async function getContacts() {
@@ -257,52 +248,44 @@ export async function getContacts() {
 
 export async function addContact(userId) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}/contact`, {
+  return await fetch(`${baseUrl}user/${userId}/contact`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 export async function removeContact(userId) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}/contact`, {
+  return await fetch(`${baseUrl}user/${userId}/contact`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 // block contact
 export async function blockContact(userId) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}/block`, {
+  return await fetch(`${baseUrl}user/${userId}/block`, {
     method: 'POST',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 // unblock contact
 export async function unblockContact(userId) {
   const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}/block`, {
+  return await fetch(`${baseUrl}user/${userId}/block`, {
     method: 'DELETE',
     headers: {
       'X-Authorization': userKey,
     },
   });
-
-  return response;
 }
 
 // get blocked contacts
@@ -330,31 +313,29 @@ export async function searchAllUsers() {
   return response.json();
 }
 
-export async function sendPhoto(data){
-  const userId = await getUserId();
-  const userKey = await getUserKey();
-  let photo = fetch(data.base64);
-  let blob = await photo.blob();
-
-  const response = await fetch(`${baseUrl}chat/${userId}/photo`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'image/png',
-      'X-Authorization': userKey,
-    },
-    body: blob,
-  });
-
-  return response;
-}
-
-export async function getPhoto(userId){
-  const userKey = await getUserKey();
-  const response = await fetch(`${baseUrl}user/${userId}/photo`, {
-    method: 'GET',
-    headers: {
-      'X-Authorization': userKey,
-    },
-  });
-  return response;
-}
+// export async function sendPhoto(data){
+//   const userId = await getUserId();
+//   const userKey = await getUserKey();
+//   let photo = fetch(data.base64);
+//   let blob = await photo.blob();
+//
+//   return await fetch(`${baseUrl}chat/${userId}/photo`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'image/png',
+//       'X-Authorization': userKey,
+//     },
+//     body: blob,
+//   });
+// }
+//
+// export async function getPhoto(userId){
+//   const userKey = await getUserKey();
+//   const response = await fetch(`${baseUrl}user/${userId}/photo`, {
+//     method: 'GET',
+//     headers: {
+//       'X-Authorization': userKey,
+//     },
+//   });
+//   return response;
+// }

@@ -1,4 +1,4 @@
-import { getChatsList, createChat, addUserToChat, getChatDetails } from '../services/api';
+import { getChatsList, createChat, addUserToChat } from '../services/api';
 import { getFirstName, getUserId } from '../services/loginManager';
 
 async function ManageChat(navigation, contact) {
@@ -17,11 +17,10 @@ async function ManageChat(navigation, contact) {
       navigation.navigate('Chat', { chatId: newChat.chat_id });
       return;
     }
-
-
     const authorFirstName = await getFirstName();
     const chatNameToFind = `${authorFirstName} + ${contact.given_name}`;
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const chat of chats) {
       if (chat.name === chatNameToFind) {
         console.log(chat.name, '   ', chatNameToFind);

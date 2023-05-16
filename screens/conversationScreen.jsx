@@ -39,7 +39,7 @@ function ConversationScreen({ route }) {
     return () => clearInterval(interval);
   }, []);
   const handleSendMessage = async () => {
-    if(editingMessage) {
+    if (editingMessage) {
       try {
         await editMessage(chatId, editingMessage.id, inputMessage);
         setInputMessage('');
@@ -103,7 +103,10 @@ function ConversationScreen({ route }) {
                   <Text style={{ color: 'red' }}>Delete</Text>
                 </TouchableOpacity>
               )}
-              <Text style={{ backgroundColor: item.author === 'me' ? 'blue' : 'grey', color: 'white', padding: 10, borderRadius: 10, margin: 5 }}>
+              <Text style={{
+                backgroundColor: item.author === 'me' ? 'blue' : 'grey', color: 'white', padding: 10, borderRadius: 10, margin: 5,
+              }}
+              >
                 {item.text}
               </Text>
             </View>
@@ -112,7 +115,9 @@ function ConversationScreen({ route }) {
       />
       <View>
         <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1, paddingHorizontal: 10 }}
+          style={{
+            height: 40, borderColor: 'gray', borderWidth: 1, paddingHorizontal: 10,
+          }}
           value={inputMessage}
           onChangeText={setInputMessage}
           placeholder="Type your message"

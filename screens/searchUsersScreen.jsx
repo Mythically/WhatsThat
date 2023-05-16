@@ -25,8 +25,6 @@ function SearchUsersScreen({ route }) {
   const fetchUsers = async () => {
     try {
       let fetchedUsers = [];
-      console.log(source);
-      console.log(route);
       if (source === 'SettingsScreen') {
         fetchedUsers = await searchAllUsers();
       } else {
